@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authentication</title>
+    <link rel="stylesheet" href="/static/auth.css">
+    <script>
+        // Activate the form based on the 'form' query parameter
+        function activateFormFromQuery() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const formType = urlParams.get('form') || 'login'; // Default to login
+            showForm(formType);
+        }
+    
+        // Show the correct form section
+        function showForm(formType) {
+            document.getElementById('signup-form').classList.remove('active');
+            document.getElementById('login-form').classList.remove('active');
+            document.getElementById('otp-form').classList.remove('active');
+    
+            if (formType === 'signup') {
+                document.getElementById('signup-form').classList.add('active');
+            } else if (formType === 'otp') {
+                document.getElementById('otp-form').classList.add('active');
+            } else {
+                document.getElementById('login-form').classList.add('active');
+            }
+        }
+    
+        // Activate the form when the page loads
+        document.addEventListener('DOMContentLoaded', activateFormFromQuery);
+    </script>
+    
+</head>
+<body>
+    <h1>Authentication Page</h1>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Login Form -->
+    <div id="login-form" class="form-container active">
+        <h2>Login</h2>
+        <form method="POST" action="/login">
+            <label>Email:</label><input type="email" name="email" required><br>
+            <label>Password:</label><input type="password" name="password" required><br>
+            <button type="submit">Login</button>
+        </form>
+        <p>Not registered? <button onclick="showForm('signup')">Sign up here</button></p>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div id="signup-form" class="form-container">
+        <h2>Sign Up</h2>
+        <form method="POST" action="/signup">
+            <label>Name:</label><input type="text" name="name" required><br>
+            <label>Email:</label><input type="email" name="email" required><br>
+            <label>Phone:</label><input type="text" name="phone" required><br>
+            <label>Password:</label><input type="password" name="password" required><br>
+            <button type="submit">Get OTP</button>
+        </form>
+        <p>Already registered? <button onclick="showForm('login')">Login here</button></p>
+    </div>
+
+    <!-- OTP Form -->
+    <div id="otp-form" class="form-container">
+        <h2>Enter OTP</h2>
+        <form method="POST" action="/verify_otp">
+            <label>OTP:</label><input type="text" name="otp" required><br>
+            <button type="submit">Verify OTP</button>
+        </form>
+        <p>Did not receive OTP? 
+            <form method="POST" action="/resend_otp" style="display:inline;">
+                <button type="submit">Resend OTP</button>
+            </form>
+         </p>
+         
+    </div>
+</body>
+</html>
