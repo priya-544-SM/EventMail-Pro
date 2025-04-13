@@ -1,0 +1,7 @@
+Flask
+Werkzeug
+pandas
+openpyxl
+mysql-connector-python
+sendgrid
+apscheduler
